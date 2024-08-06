@@ -18,9 +18,9 @@ app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
-app.config['MAIL_USERNAME'] = 'delicate.alltoowell@gmail.com'
-app.config['MAIL_PASSWORD'] = 'alltoowell'
-app.config['MAIL_DEFAULT_SENDER'] = 'delicate.alltoowell@gmail.com'
+app.config['MAIL_USERNAME'] = 'mohi11052003@gmail.com'
+app.config['MAIL_PASSWORD'] = 'zxwc nccj msfy wpxf'
+app.config['MAIL_DEFAULT_SENDER'] = 'stalksingh97@gmail.com'
 app.config['MAIL_MAX_EMAILS'] = None
 app.config['MAIL_ASCII_ATTACHMENTS'] = False
 
@@ -239,7 +239,7 @@ def book_appointment(id):
                 'counsellorname': counsellorname[0]
             }
 
-            msg = Message('DELICATE - Appointment Booked', recipients=[email])
+            msg = Message('MindMend - Appointment', recipients=[email])
             msg.html = render_template('email.html', **context)
             mail.send(msg)
 
