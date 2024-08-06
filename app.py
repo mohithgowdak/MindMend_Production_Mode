@@ -165,7 +165,7 @@ def head_book_appointment(id):
                 'counsellorname': counsellorname[0]
             }
 
-            msg = Message('DELICATE - Appointment Booked', recipients=[email])
+            msg = Message('MINDMEND - Appointment Booked', recipients=[email])
             msg.html = render_template('email.html', **context)
             mail.send(msg)
 
