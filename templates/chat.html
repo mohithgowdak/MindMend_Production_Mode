@@ -137,7 +137,7 @@
             document.getElementById('chat').value = document.getElementById('chat').value + `${data.username}: ${data.message} \n`;
 
         });
-
+// this directs to index page after the chat room is left
         function leave_room() {
             socket.emit('leave_room', {
                 username: "{{ username }}",

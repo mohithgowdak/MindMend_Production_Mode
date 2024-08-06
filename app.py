@@ -109,8 +109,7 @@ def head():
 
         c.execute("SELECT * FROM appointments WHERE isbooked = '0'")
         requests = c.fetchall()
-
-        c.execute("SELECT * FROM appointments WHERE date >= CURRENT_DATE AND isbooked = '1' AND counsellor = '"+str(session['user'])+"'")
+        c.execute("SELECT * FROM appointments WHERE date >= CURRENT_DATE AND isbooked = '1' AND counsellor = ? ORDER BY date DESC, time DESC", (str(session['user']),))
         scheduled = c.fetchall()
 
         c.execute("SELECT COUNT(username) FROM appointments WHERE date < CURRENT_DATE AND counsellor = '"+str(session['user'])+"'")
@@ -179,20 +178,26 @@ def counsellor():
     if g.user:
         conn = sqlite3.connect(database)
         c = conn.cursor()
-        c.execute("SELECT * FROM users WHERE id = '"+str(session['user'])+"'")
-        profile = c.fetchone()
-
-        c.execute("SELECT * FROM appointments WHERE isbooked = '0'")
-        requests = c.fetchall()
-
-        c.execute("SELECT * FROM appointments WHERE date >= CURRENT_DATE AND isbooked = '1' AND counsellor = '"+str(session['user'])+"'")
-        scheduled = c.fetchall()
-
-        c.execute("SELECT COUNT(username) FROM appointments WHERE date < CURRENT_DATE AND counsellor = '"+str(session['user'])+"'")
-        taken = c.fetchall()
-
-        c.execute("SELECT COUNT(username) FROM appointments WHERE date >= CURRENT_DATE AND counsellor = '"+str(session['user'])+"'")
+        
+        # Get scheduled_no
+        c.execute("SELECT COUNT(username) FROM appointments WHERE date >= CURRENT_DATE AND counsellor = ?", (str(session['user']),))
         scheduled_no = c.fetchall()
+        
+        # Get taken
+        c.execute("SELECT COUNT(username) FROM appointments WHERE date < CURRENT_DATE AND counsellor = ?", (str(session['user']),))
+        taken = c.fetchall()
+        
+        # Get scheduled in reverse chronological order
+        c.execute("SELECT * FROM appointments WHERE date >= CURRENT_DATE AND isbooked = '1' AND counsellor = ? ORDER BY date DESC, time DESC", (str(session['user']),))
+        scheduled = c.fetchall()
+        
+        # Get requests in reverse chronological order
+        c.execute("SELECT * FROM appointments WHERE isbooked = '0' ORDER BY date DESC, time DESC")
+        requests = c.fetchall()
+        
+        # Get profile
+        c.execute("SELECT * FROM users WHERE id = ?", (str(session['user']),))
+        profile = c.fetchone()
         
         context = {
             'profile': profile,
@@ -203,6 +208,7 @@ def counsellor():
         }
         return render_template('counsellor.html', **context)
     return redirect(url_for('index'))
+
 
 @app.route('/book_appointment<int:id>', methods=['GET', 'POST'])
 def book_appointment(id):
